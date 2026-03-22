@@ -1,4 +1,3 @@
-// Default channels for everyone
 const defaultChannels = [
     { name: "AD Sports Premium 1", url: "https://12.sportsurges.online/albaplayer/ad-premium-1/?serv=0" },
     { name: "BeIN Sports 4", url: "https://12.sportsurges.online/albaplayer/bein-4/?serv=0" },
@@ -14,7 +13,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const grid = document.getElementById('main-grid');
     if (!grid) return;
 
-    // Use memory if exists, otherwise use defaults
     let saved = JSON.parse(localStorage.getItem('myChannels'));
     let channels = (saved && saved.length > 0) ? saved : defaultChannels;
 
@@ -62,8 +60,6 @@ async function startStream() {
     const elem = document.documentElement;
     try {
         if (elem.requestFullscreen) await elem.requestFullscreen();
-        if (screen.orientation && screen.orientation.lock) {
-            await screen.orientation.lock('landscape').catch(() => {});
-        }
+        if (screen.orientation && screen.orientation.lock) await screen.orientation.lock('landscape');
     } catch (e) { console.log("Stream Start"); }
 }
