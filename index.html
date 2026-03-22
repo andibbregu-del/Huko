@@ -1,25 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sq">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>StreamTV | Live</title>
+    <title>Ndeshjet Live | Shiko Falas</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <div class="app-download-bar">
+        <span>Shkarko Applikacionin Android për eksperiencë më të mirë!</span>
+        <a href="YOUR_APK_LINK" class="download-btn">SHKARKO APK</a>
+    </div>
 
     <button id="admin-trigger" onclick="handleSecretClick()"></button>
 
     <section id="home-view" class="view">
         <header class="main-header">
-            <div class="logo">STREAM<span>TV</span></div>
+            <div class="logo">NDESHJET<span>LIVE</span></div>
+            <p>Zgjidhni kanalin për të nisur shikimin</p>
         </header>
+
+        <div class="promo-container">
+            <a href="https://reffpa.com/L?tag=d_325779m_97c_&site=325779&ad=97" target="_blank" class="promo-banner">
+                <div class="promo-content">
+                    <span class="badge">E REKOMANDUAR</span>
+                    <h3>Parashiko dhe Fito Big!</h3>
+                    <p>Merr bonusin 100% në depozitën e parë. <span>Luaj Tani →</span></p>
+                </div>
+            </a>
+        </div>
+
         <div class="channel-grid" id="main-grid"></div>
     </section>
 
     <section id="player-view" class="view" style="display: none;">
-        <div id="fs-overlay" onclick="startStream()"><div class="play-btn">▶ PLAY</div></div>
-        <button class="back-btn" onclick="closePlayer()">← Back</button>
+        <div id="fs-overlay" onclick="startStream()">
+            <div class="play-btn">▶ NISNI TRANSMETIMIN</div>
+        </div>
+        <button class="back-btn" onclick="closePlayer()">← Mbrapa</button>
         <iframe id="mainFrame" src="" allow="autoplay; encrypted-media; gyroscope; accelerometer; fullscreen" allowfullscreen sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"></iframe>
     </section>
 
