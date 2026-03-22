@@ -1,8 +1,7 @@
 const defaultChannels = [
-    // We add your image as the first "Channel"
     { 
         name: "Lojra & Premium", 
-        url: "https://your-ad-link-here.com", // You can put an ad link or a game here
+        url: "https://your-ad-link-here.com", 
         image: "Logo.png" 
     },
     { name: "AD Sports Premium 1", url: "https://12.sportsurges.online/albaplayer/ad-premium-1/?serv=0" },
@@ -23,7 +22,9 @@ document.addEventListener("DOMContentLoaded", function() {
     if (!grid) return;
 
     let saved = JSON.parse(localStorage.getItem('myChannels'));
-    let channels = (saved && saved.length > 0) ? saved : defaultChannels;
+    
+    // If memory is empty OR doesn't contain the new image channel, force use defaults
+    let channels = (saved && saved.length > 5) ? saved : defaultChannels;
 
     grid.innerHTML = ""; 
 
@@ -31,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const card = document.createElement('div');
         card.className = "channel-card";
         
-        // Use Logo.png if provided, otherwise use the placeholder text thumb
+        // Use Logo.png if the channel has an image property, otherwise use the generator
         const bgImage = ch.image ? ch.image : `https://placehold.co/400x225/1e293b/white?text=${ch.name.replace(/\s/g, '+')}`;
         
         card.innerHTML = `
@@ -47,4 +48,33 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-// ... Keep the rest of your script.js functions (launchPlayer, closePlayer, etc.) exactly the same ...
+function handleSecretClick() {
+    clickCount++;
+    if (clickCount >= 7) window.location.href = "admin.html";
+}
+
+function launchPlayer(url) {
+    const frame = document.getElementById('mainFrame');
+    if (!frame) return;
+    frame.src = url;
+    document.getElementById('home-view').style.display = 'none';
+    document.getElementById('player-view').style.display = 'block';
+    document.getElementById('fs-overlay').style.display = 'flex';
+}
+
+function closePlayer() {
+    const frame = document.getElementById('mainFrame');
+    if (frame) frame.src = "";
+    document.getElementById('player-view').style.display = 'none';
+    document.getElementById('home-view').style.display = 'block';
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+}
+
+async function startStream() {
+    document.getElementById('fs-overlay').style.display = 'none';
+    const elem = document.documentElement;
+    try {
+        if (elem.requestFullscreen) await elem.requestFullscreen();
+        if (screen.orientation && screen.orientation.lock) await screen.orientation.lock('landscape').catch(() => {});
+    } catch (e) { console.log("Player Active"); }
+}
