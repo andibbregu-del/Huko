@@ -24,11 +24,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     grid.innerHTML = ""; 
 
-    // 1. PAWNS CARD USING Logo.png
+    // 1. ADD PAWNS CARD (Always First)
     const pawnsCard = document.createElement('div');
     pawnsCard.className = "channel-card";
     pawnsCard.innerHTML = `
-        <div class="thumb" style="background-image: url('Logo.png');"></div>
+        <div class="thumb" style="background-image: url('Logo.png'); background-size: cover;"></div>
         <div class="info">
             <h3>Fitoni lek duke luajtur lojra</h3>
             <span>• REKOMANDIM</span>
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
     pawnsCard.onclick = () => window.open(pawnsLink, '_blank');
     grid.appendChild(pawnsCard);
 
-    // 2. MATCH CARDS
+    // 2. ADD MATCH CARDS
     channels.forEach(ch => {
         const card = document.createElement('div');
         card.className = "channel-card";
@@ -60,13 +60,15 @@ function launchPlayer(url) {
     pendingUrl = url; 
     const overlay = document.getElementById('fs-overlay');
     
-    // 3. TWO-BUTTON OVERLAY
+    // Hide the Back button so it doesn't overlap the ad buttons
+    document.querySelector('.back-btn').style.display = 'none';
+
     overlay.innerHTML = `
         <div style="text-align: center; display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 400px;">
-            <button onclick="window.open('${pawnsLink}', '_blank')" class="play-btn" style="background: #fbbf24; color: #000; border: none; cursor: pointer; padding: 18px; border-radius: 12px; font-weight: 900; font-size: 16px;">
+            <button onclick="window.open('${pawnsLink}', '_blank')" class="play-btn" style="background: #fbbf24; color: #000;">
                 💰 FITONI LEK DUKE LUAJTUR
             </button>
-            <button onclick="startStream()" class="play-btn" style="background: #22c55e; color: #fff; border: none; cursor: pointer; padding: 18px; border-radius: 12px; font-weight: 900; font-size: 16px;">
+            <button onclick="startStream()" class="play-btn" style="background: #22c55e; color: #fff;">
                 ⚽ VAZHDONI TE NDESHJA
             </button>
         </div>
@@ -77,27 +79,26 @@ function launchPlayer(url) {
     overlay.style.display = 'flex';
 }
 
-function handleSecretClick() {
-    clickCount++;
-    if (clickCount >= 7) window.location.href = "admin.html";
-}
-
 function closePlayer() {
-    const frame = document.getElementById('mainFrame');
-    if (frame) frame.src = "";
+    document.getElementById('mainFrame').src = "";
     document.getElementById('player-view').style.display = 'none';
     document.getElementById('home-view').style.display = 'block';
 }
 
 async function startStream() {
-    const frame = document.getElementById('mainFrame');
-    if (!frame) return;
-    
-    frame.src = pendingUrl; 
+    document.getElementById('mainFrame').src = pendingUrl; 
     document.getElementById('fs-overlay').style.display = 'none';
+    
+    // Show the Back button now that the stream is playing
+    document.querySelector('.back-btn').style.display = 'block';
     
     const elem = document.documentElement;
     try {
         if (elem.requestFullscreen) await elem.requestFullscreen();
-    } catch (e) { console.log("Fullscreen skipped"); }
+    } catch (e) { console.log("Fullscreen error"); }
+}
+
+function handleSecretClick() {
+    clickCount++;
+    if (clickCount >= 7) window.location.href = "admin.html";
 }
