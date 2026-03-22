@@ -10,7 +10,6 @@
     <script src="https://3nbf4.com/pfe/current/tag.min.js?z=10763079" data-cfasync="false" async></script>
 </head>
 <body>
-
     <button id="admin-trigger" onclick="handleSecretClick()"></button>
 
     <section id="home-view" class="view">
@@ -18,22 +17,15 @@
             <div class="logo">NDESHJET<span>LIVE</span></div>
             <p>Zgjidhni kanalin për të nisur transmetimin</p>
         </header>
-
         <div class="channel-grid" id="main-grid"></div>
     </section>
 
     <section id="player-view" class="view" style="display: none;">
-        <div id="fs-overlay" onclick="startStream()">
-            <div class="play-btn">▶ NISNI SHIKIMIN</div>
-        </div>
+        <div id="fs-overlay"></div>
         <button class="back-btn" onclick="closePlayer()">← Mbrapa</button>
         <iframe id="mainFrame" src="" allow="autoplay; encrypted-media; gyroscope; accelerometer; fullscreen" allowfullscreen sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"></iframe>
     </section>
 
-    <script type="text/javascript" src="//acscdn.com/script/aclib.js"></script>
-    <script type="text/javascript">
-        aclib.runAutoTag({ zoneId: 'vw6xrzcu92' });
-    </script>
     <script src="script.js"></script>
 </body>
 </html>
