@@ -1,9 +1,6 @@
+const pawnsLink = "https://discoverpawns.eu/19346120";
+
 const defaultChannels = [
-    { 
-        name: "Lojra & Premium", 
-        url: "https://your-ad-link-here.com", 
-        image: "Logo.png" 
-    },
     { name: "AD Sports Premium 1", url: "https://12.sportsurges.online/albaplayer/ad-premium-1/?serv=0" },
     { name: "BeIN Sports 1", url: "https://12.sportsurges.online/albaplayer/bein-1/?serv=0" },
     { name: "BeIN Sports 2", url: "https://12.sportsurges.online/albaplayer/bein-2/?serv=0" },
@@ -16,23 +13,35 @@ const defaultChannels = [
 ];
 
 let clickCount = 0;
+let pendingUrl = ""; // Stores the match link while user sees the overlay
 
 document.addEventListener("DOMContentLoaded", function() {
     const grid = document.getElementById('main-grid');
     if (!grid) return;
 
     let saved = JSON.parse(localStorage.getItem('myChannels'));
-    
-    // If memory is empty OR doesn't contain the new image channel, force use defaults
-    let channels = (saved && saved.length > 5) ? saved : defaultChannels;
+    let channels = (saved && saved.length > 0) ? saved : defaultChannels;
 
     grid.innerHTML = ""; 
 
+    // 1. ADD THE PAWNS CARD MANUALLY AT THE START
+    const pawnsCard = document.createElement('div');
+    pawnsCard.className = "channel-card";
+    pawnsCard.innerHTML = `
+        <div class="thumb" style="background-image: url('https://pawns.app/wp-content/uploads/2023/04/earn-money-playing-games.jpg');"></div>
+        <div class="info">
+            <h3>Fitoni lek duke luajtur lojra</h3>
+            <span>• REKOMANDIM</span>
+        </div>
+    `;
+    pawnsCard.onclick = () => window.open(pawnsLink, '_blank');
+    grid.appendChild(pawnsCard);
+
+    // 2. ADD THE MATCH CARDS
     channels.forEach(ch => {
         const card = document.createElement('div');
         card.className = "channel-card";
         
-        // Use Logo.png if the channel has an image property, otherwise use the generator
         const bgImage = ch.image ? ch.image : `https://placehold.co/400x225/1e293b/white?text=${ch.name.replace(/\s/g, '+')}`;
         
         card.innerHTML = `
@@ -54,12 +63,24 @@ function handleSecretClick() {
 }
 
 function launchPlayer(url) {
-    const frame = document.getElementById('mainFrame');
-    if (!frame) return;
-    frame.src = url;
+    pendingUrl = url; // Save URL for later
+    const overlay = document.getElementById('fs-overlay');
+    
+    // 3. UPDATE OVERLAY WITH TWO BUTTONS
+    overlay.innerHTML = `
+        <div style="text-align: center; display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 400px;">
+            <button onclick="window.open('${pawnsLink}', '_blank')" class="play-btn" style="background: #fbbf24; color: #000; border: none; cursor: pointer;">
+                💰 FITONI LEK DUKE LUAJTUR
+            </button>
+            <button onclick="startStream()" class="play-btn" style="border: none; cursor: pointer;">
+                ⚽ VAZHDONI TE NDESHJA
+            </button>
+        </div>
+    `;
+
     document.getElementById('home-view').style.display = 'none';
     document.getElementById('player-view').style.display = 'block';
-    document.getElementById('fs-overlay').style.display = 'flex';
+    overlay.style.display = 'flex';
 }
 
 function closePlayer() {
@@ -67,14 +88,17 @@ function closePlayer() {
     if (frame) frame.src = "";
     document.getElementById('player-view').style.display = 'none';
     document.getElementById('home-view').style.display = 'block';
-    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
 }
 
 async function startStream() {
+    const frame = document.getElementById('mainFrame');
+    if (!frame) return;
+    
+    frame.src = pendingUrl; // Load the match now
     document.getElementById('fs-overlay').style.display = 'none';
+    
     const elem = document.documentElement;
     try {
         if (elem.requestFullscreen) await elem.requestFullscreen();
-        if (screen.orientation && screen.orientation.lock) await screen.orientation.lock('landscape').catch(() => {});
-    } catch (e) { console.log("Player Active"); }
+    } catch (e) { console.log("Fullscreen disabled"); }
 }
