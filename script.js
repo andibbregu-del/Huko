@@ -13,7 +13,7 @@ const defaultChannels = [
 ];
 
 let clickCount = 0;
-let pendingUrl = ""; // Stores the match link while user sees the overlay
+let pendingUrl = ""; 
 
 document.addEventListener("DOMContentLoaded", function() {
     const grid = document.getElementById('main-grid');
@@ -24,11 +24,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
     grid.innerHTML = ""; 
 
-    // 1. ADD THE PAWNS CARD MANUALLY AT THE START
+    // 1. PAWNS CARD USING Logo.png
     const pawnsCard = document.createElement('div');
     pawnsCard.className = "channel-card";
     pawnsCard.innerHTML = `
-        <div class="thumb" style="background-image: url('https://pawns.app/wp-content/uploads/2023/04/earn-money-playing-games.jpg');"></div>
+        <div class="thumb" style="background-image: url('Logo.png');"></div>
         <div class="info">
             <h3>Fitoni lek duke luajtur lojra</h3>
             <span>• REKOMANDIM</span>
@@ -37,11 +37,10 @@ document.addEventListener("DOMContentLoaded", function() {
     pawnsCard.onclick = () => window.open(pawnsLink, '_blank');
     grid.appendChild(pawnsCard);
 
-    // 2. ADD THE MATCH CARDS
+    // 2. MATCH CARDS
     channels.forEach(ch => {
         const card = document.createElement('div');
         card.className = "channel-card";
-        
         const bgImage = ch.image ? ch.image : `https://placehold.co/400x225/1e293b/white?text=${ch.name.replace(/\s/g, '+')}`;
         
         card.innerHTML = `
@@ -57,22 +56,17 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-function handleSecretClick() {
-    clickCount++;
-    if (clickCount >= 7) window.location.href = "admin.html";
-}
-
 function launchPlayer(url) {
-    pendingUrl = url; // Save URL for later
+    pendingUrl = url; 
     const overlay = document.getElementById('fs-overlay');
     
-    // 3. UPDATE OVERLAY WITH TWO BUTTONS
+    // 3. TWO-BUTTON OVERLAY
     overlay.innerHTML = `
         <div style="text-align: center; display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 400px;">
-            <button onclick="window.open('${pawnsLink}', '_blank')" class="play-btn" style="background: #fbbf24; color: #000; border: none; cursor: pointer;">
+            <button onclick="window.open('${pawnsLink}', '_blank')" class="play-btn" style="background: #fbbf24; color: #000; border: none; cursor: pointer; padding: 18px; border-radius: 12px; font-weight: 900; font-size: 16px;">
                 💰 FITONI LEK DUKE LUAJTUR
             </button>
-            <button onclick="startStream()" class="play-btn" style="border: none; cursor: pointer;">
+            <button onclick="startStream()" class="play-btn" style="background: #22c55e; color: #fff; border: none; cursor: pointer; padding: 18px; border-radius: 12px; font-weight: 900; font-size: 16px;">
                 ⚽ VAZHDONI TE NDESHJA
             </button>
         </div>
@@ -81,6 +75,11 @@ function launchPlayer(url) {
     document.getElementById('home-view').style.display = 'none';
     document.getElementById('player-view').style.display = 'block';
     overlay.style.display = 'flex';
+}
+
+function handleSecretClick() {
+    clickCount++;
+    if (clickCount >= 7) window.location.href = "admin.html";
 }
 
 function closePlayer() {
@@ -94,11 +93,11 @@ async function startStream() {
     const frame = document.getElementById('mainFrame');
     if (!frame) return;
     
-    frame.src = pendingUrl; // Load the match now
+    frame.src = pendingUrl; 
     document.getElementById('fs-overlay').style.display = 'none';
     
     const elem = document.documentElement;
     try {
         if (elem.requestFullscreen) await elem.requestFullscreen();
-    } catch (e) { console.log("Fullscreen disabled"); }
+    } catch (e) { console.log("Fullscreen skipped"); }
 }
