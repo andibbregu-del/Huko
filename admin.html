@@ -2,69 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>StreamTV | Settings</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Admin Panel</title>
     <style>
-        .admin-box { max-width: 500px; margin: 50px auto; background: #1e293b; padding: 30px; border-radius: 15px; border: 1px solid #22c55e; }
-        .admin-box input { width: 90%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; }
-        .ch-item { display: flex; justify-content: space-between; background: #0f172a; padding: 10px; margin-top: 5px; border-radius: 5px; align-items: center; }
-        .del-btn { background: #ef4444; border: none; color: white; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        body { background: #0f172a; color: white; font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; }
+        .box { background: #1e293b; padding: 30px; border-radius: 12px; width: 350px; border: 1px solid #22c55e; }
+        input { width: 90%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #334155; background: #000; color: white; }
+        button { width: 100%; padding: 10px; background: #22c55e; border: none; color: black; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        .logout { background: transparent; border: 1px solid white; color: white; margin-top: 10px; }
     </style>
 </head>
 <body>
-    <div class="admin-box" id="login-screen">
+    <div class="box" id="login">
         <h2>Admin Login</h2>
-        <input type="text" id="user" placeholder="Username">
-        <input type="password" id="pass" placeholder="Password">
-        <button onclick="login()" style="width:100%; background:#22c55e; padding:10px; border:none; color:white; font-weight:bold; cursor:pointer;">Enter Control Panel</button>
+        <input type="text" id="u" placeholder="Username">
+        <input type="password" id="p" placeholder="Password">
+        <button onclick="check()">Hyr</button>
     </div>
 
-    <div class="admin-box" id="control-panel" style="display:none;">
-        <h2>Add New Channel</h2>
-        <input type="text" id="newName" placeholder="Name (e.g. BeIN 3)">
-        <input type="text" id="newUrl" placeholder="URL (https://...)">
-        <button onclick="addCh()" style="width:100%; background:#22c55e; border:none; color:white; padding:10px; cursor:pointer;">+ Add to Grid</button>
-        
-        <h3 style="margin-top:30px;">Manage Channels</h3>
-        <div id="edit-list"></div>
-        <button onclick="window.location.href='index.html'" style="margin-top:20px; background:transparent; border:1px solid #fff; color:#fff; cursor:pointer;">View Website</button>
+    <div class="box" id="panel" style="display:none;">
+        <h2>Shto Kanal</h2>
+        <input type="text" id="n" placeholder="Emri i Kanalit">
+        <input type="text" id="l" placeholder="Linku i Streamit">
+        <button onclick="add()">Shto Kanalin</button>
+        <button class="logout" onclick="localStorage.removeItem('myChannels'); location.reload();">Reset Defaults</button>
+        <button class="logout" onclick="window.location.href='index.html'">Shiko Webin</button>
     </div>
 
     <script>
-        function login() {
-            if(document.getElementById('user').value === "Elephant" && document.getElementById('pass').value === "Tiger") {
-                document.getElementById('login-screen').style.display = "none";
-                document.getElementById('control-panel').style.display = "block";
-                loadList();
-            } else { alert("Wrong!"); }
+        function check() {
+            if(document.getElementById('u').value === "Elephant" && document.getElementById('p').value === "Tiger") {
+                document.getElementById('login').style.display = "none";
+                document.getElementById('panel').style.display = "block";
+            } else { alert("Gabim!"); }
         }
-
-        const defaults = [
-            { name: "BeIN Sports 1", url: "https://12.sportsurges.online/albaplayer/bein-1/?serv=0" },
-            { name: "BeIN Sports 2", url: "https://12.sportsurges.online/albaplayer/bein-2/?serv=0" }
-        ];
-
-        function loadList() {
-            const list = document.getElementById('edit-list');
-            list.innerHTML = "";
-            let channels = JSON.parse(localStorage.getItem('myChannels')) || defaults;
-            channels.forEach((ch, i) => {
-                list.innerHTML += `<div class="ch-item"><span>${ch.name}</span> <button class="del-btn" onclick="remove(${i})">Delete</button></div>`;
-            });
-        }
-
-        function addCh() {
-            let channels = JSON.parse(localStorage.getItem('myChannels')) || defaults;
-            channels.push({ name: document.getElementById('newName').value, url: document.getElementById('newUrl').value });
+        function add() {
+            let channels = JSON.parse(localStorage.getItem('myChannels')) || [];
+            // If it's the first time adding, start with the defaults
+            if(channels.length === 0) {
+                // This line is optional but helps sync
+            }
+            channels.push({ name: document.getElementById('n').value, url: document.getElementById('l').value });
             localStorage.setItem('myChannels', JSON.stringify(channels));
-            loadList();
-        }
-
-        function remove(i) {
-            let channels = JSON.parse(localStorage.getItem('myChannels')) || defaults;
-            channels.splice(i, 1);
-            localStorage.setItem('myChannels', JSON.stringify(channels));
-            loadList();
+            alert("U shtua!");
         }
     </script>
 </body>
