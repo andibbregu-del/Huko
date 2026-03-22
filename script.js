@@ -2,7 +2,7 @@ const pawnsLink = "https://discoverpawns.eu/19346120";
 
 const defaultChannels = [
     { 
-        name: "Lojra & Premium", 
+        name: "Fitoni Lek Duke Luajtur", 
         url: "https://discoverpawns.eu/19346120", 
         image: "Logo.png",
         isRecommendation: true
@@ -21,7 +21,7 @@ const defaultChannels = [
 let clickCount = 0;
 let pendingUrl = ""; 
 
-// Handles Android Hardware Back Button
+// Handles Android Hardware Back Button logic
 window.onpopstate = function() {
     closePlayer(true); 
 };
@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (!grid) return;
 
     let saved = JSON.parse(localStorage.getItem('myChannels'));
+    // Force use defaultChannels if saved list is too small to ensure the referral card is present
     let channels = (saved && saved.length > 5) ? saved : defaultChannels;
 
     grid.innerHTML = ""; 
@@ -39,16 +40,21 @@ document.addEventListener("DOMContentLoaded", function() {
         const card = document.createElement('div');
         card.className = "channel-card";
         const bgImage = ch.image ? ch.image : `https://placehold.co/400x225/1e293b/white?text=${ch.name.replace(/\s/g, '+')}`;
+        const label = ch.isRecommendation ? "REKOMANDIM" : "LIVE TANI";
         
         card.innerHTML = `
             <div class="thumb" style="background-image: url('${bgImage}');"></div>
             <div class="info">
                 <h3>${ch.name}</h3>
-                <span>• LIVE TANI</span>
+                <span>• ${label}</span>
             </div>
         `;
         
-        card.onclick = () => launchPlayer(ch.url);
+        if (ch.isRecommendation) {
+            card.onclick = () => window.open(ch.url, '_blank');
+        } else {
+            card.onclick = () => launchPlayer(ch.url);
+        }
         grid.appendChild(card);
     });
 });
@@ -57,7 +63,7 @@ function launchPlayer(url) {
     pendingUrl = url; 
     const overlay = document.getElementById('fs-overlay');
     
-    // Push state so Android back button works
+    // Push a new state so the back button can return to the home screen
     history.pushState({view: "player"}, "");
 
     overlay.innerHTML = `
@@ -93,6 +99,7 @@ function closePlayer(isBackAction = false) {
     document.getElementById('home-view').style.display = 'block';
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
     
+    // If not triggered by the back button, manually go back in history
     if (!isBackAction) history.back();
 }
 
