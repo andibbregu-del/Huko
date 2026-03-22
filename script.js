@@ -1,4 +1,3 @@
-// script.js
 const pawnsLink = "https://discoverpawns.eu/19346120";
 
 const defaultChannels = [
@@ -25,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     grid.innerHTML = ""; 
 
-    // 1. ADD THE PAWNS CARD FIRST WITH Logo.png
+    // 1. ADD THE PAWNS CARD FIRST
     const pawnsCard = document.createElement('div');
     pawnsCard.className = "channel-card";
     pawnsCard.innerHTML = `
@@ -38,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
     pawnsCard.onclick = () => window.open(pawnsLink, '_blank');
     grid.appendChild(pawnsCard);
 
-    // 2. ADD THE MATCH CARDS
+    // 2. ADD MATCH CARDS
     channels.forEach(ch => {
         const card = document.createElement('div');
         card.className = "channel-card";
@@ -64,8 +63,13 @@ function launchPlayer(url) {
     // Hide back button during ad screen
     document.querySelector('.back-btn').style.display = 'none';
 
+    // Added background-image here so Logo.png shows behind the buttons
+    overlay.style.backgroundImage = "url('Logo.png')";
+    overlay.style.backgroundSize = "cover";
+    overlay.style.backgroundPosition = "center";
+
     overlay.innerHTML = `
-        <div style="text-align: center; display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 400px;">
+        <div style="text-align: center; display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 400px; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 15px;">
             <button onclick="window.open('${pawnsLink}', '_blank')" class="play-btn" style="background: #fbbf24; color: #000; border: none; cursor: pointer; padding: 18px; border-radius: 12px; font-weight: 900; font-size: 16px;">
                 💰 FITONI LEK DUKE LUAJTUR
             </button>
@@ -88,13 +92,10 @@ function closePlayer() {
 
 async function startStream() {
     document.getElementById('mainFrame').src = pendingUrl; 
-    document.getElementById('fs-overlay').style.display = 'none';
+    const overlay = document.getElementById('fs-overlay');
+    overlay.style.display = 'none';
+    overlay.style.backgroundImage = "none"; // Clear logo when stream starts
     document.querySelector('.back-btn').style.display = 'block';
-    
-    const elem = document.documentElement;
-    try {
-        if (elem.requestFullscreen) await elem.requestFullscreen();
-    } catch (e) { console.log("Fullscreen skipped"); }
 }
 
 function handleSecretClick() {
