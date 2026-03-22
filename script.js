@@ -1,40 +1,35 @@
-// 1. Define the default channels
+// Default channels for everyone
 const defaultChannels = [
-    { name: "BeIN Sports 1", url: "https://12.sportsurges.online/albaplayer/bein-1/?serv=0" },
-    { name: "BeIN Sports 2", url: "https://12.sportsurges.online/albaplayer/bein-2/?serv=0" },
-    { name: "AD Sports Premium 1", url: "https://12.sportsurges.online/albaplayer/ad-premium-1/?serv=0" }
+    { name: "AD Sports Premium 1", url: "https://12.sportsurges.online/albaplayer/ad-premium-1/?serv=0" },
+    { name: "BeIN Sports 4", url: "https://12.sportsurges.online/albaplayer/bein-4/?serv=0" },
+    { name: "BeIN Sports 6", url: "https://30.wwwkoora.com/albaplayer/bein-sports-hd-6/?serv=0" },
+    { name: "BeIN Sports 9", url: "https://30.wwwkoora.com/albaplayer/bein-sports-hd-9/?serv=0" },
+    { name: "Kanal Sportiv 1", url: "https://29.lifekora.com/splayer/Live1.php" },
+    { name: "Kanal Sportiv 5", url: "https://29.lifekora.com/splayer/Live5.php" }
 ];
 
 let clickCount = 0;
 
-// 2. This function runs as soon as the page is ready
 document.addEventListener("DOMContentLoaded", function() {
     const grid = document.getElementById('main-grid');
-    
-    // Safety check: if grid doesn't exist, stop
     if (!grid) return;
 
-    // 3. Load from memory or use defaults
-    let savedChannels = JSON.parse(localStorage.getItem('myChannels'));
-    
-    // If memory is empty or broken, use the defaults defined above
-    let channels = (savedChannels && savedChannels.length > 0) ? savedChannels : defaultChannels;
+    // Use memory if exists, otherwise use defaults
+    let saved = JSON.parse(localStorage.getItem('myChannels'));
+    let channels = (saved && saved.length > 0) ? saved : defaultChannels;
 
-    // 4. Clear the grid and inject the channel cards
     grid.innerHTML = ""; 
 
     channels.forEach(ch => {
         const card = document.createElement('div');
         card.className = "channel-card";
-        
-        // Create a clean thumbnail label
         const thumbText = ch.name.replace(/\s/g, '+');
         
         card.innerHTML = `
             <div class="thumb" style="background-image: url('https://placehold.co/400x225/1e293b/white?text=${thumbText}');"></div>
             <div class="info">
                 <h3>${ch.name}</h3>
-                <span>Transmetim Live</span>
+                <span>• LIVE TANI</span>
             </div>
         `;
         
@@ -43,36 +38,23 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-// --- HELPER FUNCTIONS ---
-
-// Secret: Jump to admin.html after 7 clicks in top right
 function handleSecretClick() {
     clickCount++;
-    if (clickCount >= 7) {
-        window.location.href = "admin.html";
-    }
+    if (clickCount >= 7) window.location.href = "admin.html";
 }
 
 function launchPlayer(url) {
-    const frame = document.getElementById('mainFrame');
-    if (!frame) return;
-    
-    frame.src = url;
+    document.getElementById('mainFrame').src = url;
     document.getElementById('home-view').style.display = 'none';
     document.getElementById('player-view').style.display = 'block';
     document.getElementById('fs-overlay').style.display = 'flex';
 }
 
 function closePlayer() {
-    const frame = document.getElementById('mainFrame');
-    if (frame) frame.src = "";
-    
+    document.getElementById('mainFrame').src = "";
     document.getElementById('player-view').style.display = 'none';
     document.getElementById('home-view').style.display = 'block';
-    
-    if (document.fullscreenElement) {
-        document.exitFullscreen().catch(() => {});
-    }
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
 }
 
 async function startStream() {
@@ -83,7 +65,5 @@ async function startStream() {
         if (screen.orientation && screen.orientation.lock) {
             await screen.orientation.lock('landscape').catch(() => {});
         }
-    } catch (e) {
-        console.log("Player Active");
-    }
+    } catch (e) { console.log("Stream Start"); }
 }
