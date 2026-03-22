@@ -1,5 +1,9 @@
+// Full channel list including BeIN 2 and 3
 const defaultChannels = [
     { name: "AD Sports Premium 1", url: "https://12.sportsurges.online/albaplayer/ad-premium-1/?serv=0" },
+    { name: "BeIN Sports 1", url: "https://12.sportsurges.online/albaplayer/bein-1/?serv=0" },
+    { name: "BeIN Sports 2", url: "https://12.sportsurges.online/albaplayer/bein-2/?serv=0" },
+    { name: "BeIN Sports 3", url: "https://12.sportsurges.online/albaplayer/bein-3/?serv=0" },
     { name: "BeIN Sports 4", url: "https://12.sportsurges.online/albaplayer/bein-4/?serv=0" },
     { name: "BeIN Sports 6", url: "https://30.wwwkoora.com/albaplayer/bein-sports-hd-6/?serv=0" },
     { name: "BeIN Sports 9", url: "https://30.wwwkoora.com/albaplayer/bein-sports-hd-9/?serv=0" },
@@ -13,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const grid = document.getElementById('main-grid');
     if (!grid) return;
 
+    // Load from memory or use defaults above
     let saved = JSON.parse(localStorage.getItem('myChannels'));
     let channels = (saved && saved.length > 0) ? saved : defaultChannels;
 
@@ -42,14 +47,17 @@ function handleSecretClick() {
 }
 
 function launchPlayer(url) {
-    document.getElementById('mainFrame').src = url;
+    const frame = document.getElementById('mainFrame');
+    if (!frame) return;
+    frame.src = url;
     document.getElementById('home-view').style.display = 'none';
     document.getElementById('player-view').style.display = 'block';
     document.getElementById('fs-overlay').style.display = 'flex';
 }
 
 function closePlayer() {
-    document.getElementById('mainFrame').src = "";
+    const frame = document.getElementById('mainFrame');
+    if (frame) frame.src = "";
     document.getElementById('player-view').style.display = 'none';
     document.getElementById('home-view').style.display = 'block';
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
@@ -60,6 +68,6 @@ async function startStream() {
     const elem = document.documentElement;
     try {
         if (elem.requestFullscreen) await elem.requestFullscreen();
-        if (screen.orientation && screen.orientation.lock) await screen.orientation.lock('landscape');
-    } catch (e) { console.log("Stream Start"); }
+        if (screen.orientation && screen.orientation.lock) await screen.orientation.lock('landscape').catch(() => {});
+    } catch (e) { console.log("Player Active"); }
 }
