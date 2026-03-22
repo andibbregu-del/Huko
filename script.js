@@ -2,7 +2,7 @@ const pawnsLink = "https://discoverpawns.eu/19346120";
 
 const defaultChannels = [
     { 
-        name: "Fitoni lek duke luajtur lojra", 
+        name: "Lojra & Premium", 
         url: "https://discoverpawns.eu/19346120", 
         image: "Logo.png",
         isRecommendation: true
@@ -21,35 +21,34 @@ const defaultChannels = [
 let clickCount = 0;
 let pendingUrl = ""; 
 
+// Handles Android Hardware Back Button
+window.onpopstate = function() {
+    closePlayer(true); 
+};
+
 document.addEventListener("DOMContentLoaded", function() {
     const grid = document.getElementById('main-grid');
     if (!grid) return;
 
     let saved = JSON.parse(localStorage.getItem('myChannels'));
-    let channels = (saved && saved.length > 0) ? saved : defaultChannels;
+    let channels = (saved && saved.length > 5) ? saved : defaultChannels;
 
     grid.innerHTML = ""; 
 
     channels.forEach(ch => {
         const card = document.createElement('div');
         card.className = "channel-card";
-        
         const bgImage = ch.image ? ch.image : `https://placehold.co/400x225/1e293b/white?text=${ch.name.replace(/\s/g, '+')}`;
-        const label = ch.isRecommendation ? "REKOMANDIM" : "LIVE TANI";
         
         card.innerHTML = `
             <div class="thumb" style="background-image: url('${bgImage}');"></div>
             <div class="info">
                 <h3>${ch.name}</h3>
-                <span>• ${label}</span>
+                <span>• LIVE TANI</span>
             </div>
         `;
         
-        if (ch.isRecommendation) {
-            card.onclick = () => window.open(ch.url, '_blank');
-        } else {
-            card.onclick = () => launchPlayer(ch.url);
-        }
+        card.onclick = () => launchPlayer(ch.url);
         grid.appendChild(card);
     });
 });
@@ -57,20 +56,20 @@ document.addEventListener("DOMContentLoaded", function() {
 function launchPlayer(url) {
     pendingUrl = url; 
     const overlay = document.getElementById('fs-overlay');
-    document.querySelector('.back-btn').style.display = 'none';
+    
+    // Push state so Android back button works
+    history.pushState({view: "player"}, "");
 
     overlay.innerHTML = `
         <div style="text-align: center; width: 90%; max-width: 400px; display: flex; flex-direction: column; align-items: center; gap: 20px;">
-            
             <div class="channel-card" style="width: 100%; cursor: default; border-color: #334155;">
                 <div class="thumb" style="background-image: url('Logo.png');"></div>
             </div>
-
             <div style="width: 100%; display: flex; flex-direction: column; gap: 15px;">
-                <button onclick="window.open('${pawnsLink}', '_blank')" class="play-btn" style="background: #fbbf24; color: #000; width: 100%; border: none; cursor: pointer; padding: 18px; border-radius: 12px; font-weight: 900; font-size: 16px;">
+                <button onclick="window.open('${pawnsLink}', '_blank')" style="background: #fbbf24; color: #000; width: 100%; border: none; cursor: pointer; padding: 18px; border-radius: 12px; font-weight: 900; font-size: 16px;">
                     💰 FITONI LEK DUKE LUAJTUR
                 </button>
-                <button onclick="startStream()" class="play-btn" style="background: #22c55e; color: #fff; width: 100%; border: none; cursor: pointer; padding: 18px; border-radius: 12px; font-weight: 900; font-size: 16px;">
+                <button onclick="startStream()" style="background: #22c55e; color: #fff; width: 100%; border: none; cursor: pointer; padding: 18px; border-radius: 12px; font-weight: 900; font-size: 16px;">
                     ⚽ VAZHDONI TE NDESHJA
                 </button>
             </div>
@@ -85,14 +84,16 @@ function launchPlayer(url) {
 function startStream() {
     document.getElementById('mainFrame').src = pendingUrl; 
     document.getElementById('fs-overlay').style.display = 'none';
-    document.querySelector('.back-btn').style.display = 'block';
 }
 
-function closePlayer() {
-    document.getElementById('mainFrame').src = "";
+function closePlayer(isBackAction = false) {
+    const frame = document.getElementById('mainFrame');
+    if (frame) frame.src = "";
     document.getElementById('player-view').style.display = 'none';
     document.getElementById('home-view').style.display = 'block';
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    
+    if (!isBackAction) history.back();
 }
 
 function handleSecretClick() {
