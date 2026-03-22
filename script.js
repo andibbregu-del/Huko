@@ -1,6 +1,12 @@
 const pawnsLink = "https://discoverpawns.eu/19346120";
 
 const defaultChannels = [
+    { 
+        name: "Fitoni lek duke luajtur lojra", 
+        url: "https://discoverpawns.eu/19346120", 
+        image: "Logo.png",
+        isRecommendation: true
+    },
     { name: "AD Sports Premium 1", url: "https://12.sportsurges.online/albaplayer/ad-premium-1/?serv=0" },
     { name: "BeIN Sports 1", url: "https://12.sportsurges.online/albaplayer/bein-1/?serv=0" },
     { name: "BeIN Sports 2", url: "https://12.sportsurges.online/albaplayer/bein-2/?serv=0" },
@@ -24,28 +30,26 @@ document.addEventListener("DOMContentLoaded", function() {
 
     grid.innerHTML = ""; 
 
-    // Add Pawns Card first
-    const pawnsCard = document.createElement('div');
-    pawnsCard.className = "channel-card";
-    pawnsCard.innerHTML = `
-        <div class="thumb" style="background-image: url('Logo.png');"></div>
-        <div class="info">
-            <h3>Fitoni lek duke luajtur lojra</h3>
-            <span>• REKOMANDIM</span>
-        </div>
-    `;
-    pawnsCard.onclick = () => window.open(pawnsLink, '_blank');
-    grid.appendChild(pawnsCard);
-
     channels.forEach(ch => {
         const card = document.createElement('div');
         card.className = "channel-card";
+        
         const bgImage = ch.image ? ch.image : `https://placehold.co/400x225/1e293b/white?text=${ch.name.replace(/\s/g, '+')}`;
+        const label = ch.isRecommendation ? "REKOMANDIM" : "LIVE TANI";
+        
         card.innerHTML = `
             <div class="thumb" style="background-image: url('${bgImage}');"></div>
-            <div class="info"><h3>${ch.name}</h3><span>• LIVE TANI</span></div>
+            <div class="info">
+                <h3>${ch.name}</h3>
+                <span>• ${label}</span>
+            </div>
         `;
-        card.onclick = () => launchPlayer(ch.url);
+        
+        if (ch.isRecommendation) {
+            card.onclick = () => window.open(ch.url, '_blank');
+        } else {
+            card.onclick = () => launchPlayer(ch.url);
+        }
         grid.appendChild(card);
     });
 });
@@ -56,14 +60,20 @@ function launchPlayer(url) {
     document.querySelector('.back-btn').style.display = 'none';
 
     overlay.innerHTML = `
-        <div style="text-align: center; width: 90%; max-width: 400px;">
-            <img src="Logo.png" class="overlay-logo">
-            <button onclick="window.open('${pawnsLink}', '_blank')" class="play-btn" style="background: #fbbf24; color: #000;">
-                💰 FITONI LEK DUKE LUAJTUR
-            </button>
-            <button onclick="startStream()" class="play-btn" style="background: #22c55e; color: #fff;">
-                ⚽ VAZHDONI TE NDESHJA
-            </button>
+        <div style="text-align: center; width: 90%; max-width: 400px; display: flex; flex-direction: column; align-items: center; gap: 20px;">
+            
+            <div class="channel-card" style="width: 100%; cursor: default; border-color: #334155;">
+                <div class="thumb" style="background-image: url('Logo.png');"></div>
+            </div>
+
+            <div style="width: 100%; display: flex; flex-direction: column; gap: 15px;">
+                <button onclick="window.open('${pawnsLink}', '_blank')" class="play-btn" style="background: #fbbf24; color: #000; width: 100%; border: none; cursor: pointer; padding: 18px; border-radius: 12px; font-weight: 900; font-size: 16px;">
+                    💰 FITONI LEK DUKE LUAJTUR
+                </button>
+                <button onclick="startStream()" class="play-btn" style="background: #22c55e; color: #fff; width: 100%; border: none; cursor: pointer; padding: 18px; border-radius: 12px; font-weight: 900; font-size: 16px;">
+                    ⚽ VAZHDONI TE NDESHJA
+                </button>
+            </div>
         </div>
     `;
 
@@ -82,6 +92,7 @@ function closePlayer() {
     document.getElementById('mainFrame').src = "";
     document.getElementById('player-view').style.display = 'none';
     document.getElementById('home-view').style.display = 'block';
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
 }
 
 function handleSecretClick() {
